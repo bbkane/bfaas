@@ -1,19 +1,8 @@
+#include "bf.h"
+
 #include <assert.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-
-#define ARRAY_SIZE 30
-
-// pass in a larger data type at compile time with -DDATA_TYPE=<type>
-// Ex: -DDATA_TYPE=int
-#ifndef DATA_TYPE
-# define DATA_TYPE char
-#endif
-
-typedef DATA_TYPE data_type;
-
-#undef DATA_TYPE
 
 void print_truncated_data(data_type* data)
 {
@@ -39,25 +28,9 @@ void print_all_data(data_type* data)
     printf("\n");
 }
 
-// TOOD:
-// Expand this to use '-f <file>' and input in the code itself
-// Must return a null terminated string
-char* get_program(int argc, char** argv)
-{
-    if (argc != 2) {
-        fprintf(stderr, "Usage: %s <code>\n", argv[0]);
-        exit(1);
-    }
-    char* program = argv[1];
-    return program;
-}
 
-int main(int argc, char** argv)
+void bf_interpret(char* program)
 {
-    /* char program[] = "++><."; */
-    /* char program[] = "[[++]].."; */
-    /* char program[] = "++>+++++[<+>-]>."; */
-    char* program = get_program(argc, argv);
     size_t program_length = strlen(program);
     char* program_ptr = program;
 

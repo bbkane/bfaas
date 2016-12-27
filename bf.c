@@ -16,8 +16,8 @@
 #endif
 
 typedef DATA_TYPE data_type;
-
 #undef DATA_TYPE
+
 #endif /* INTERFACE */
 
 void print_truncated_data(data_type* data, size_t data_len)
@@ -57,7 +57,7 @@ void bf_interpret(char* program, size_t data_len)
     // make an array with a flag variable in the middle
     // if the data pointer ever reaches the flag variable,
     // make a new array and space the data around the flag pointer again
-    // Evenly? 
+    // Evenly?
     /* data_type data[ARRAY_SIZE] = {0}; */
     data_type* data = (data_type *)malloc(sizeof(data_type) * data_len);
     memset(data, 0, sizeof(data_type) * data_len);
@@ -71,8 +71,22 @@ void bf_interpret(char* program, size_t data_len)
         // TODO: this may need a +1 to account for the \0 appended
         assert(program_ptr <= program + program_length);
 
-        if (*program_ptr == '>') { data_ptr++; }
-        else if (*program_ptr == '<') { data_ptr--; }
+        if (*program_ptr == '>') {
+            if (data_ptr == data + data_len - 1) {
+                data_ptr = data;
+            }
+            else {
+                data_ptr++;
+            }
+        }
+        else if (*program_ptr == '<') {
+            if (data_ptr == data) {
+                data_ptr = data + data_len - 1;
+            }
+            else {
+                data_ptr--;
+            }
+        }
         else if (*program_ptr == '+') { (*data_ptr)++; }
         else if (*program_ptr == '-') { (*data_ptr)--; }
         // TODO: replace %d with %c to print characters

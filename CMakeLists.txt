@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 project(bfaas)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror" )
+add_compile_options(-Wall -Werror -pedantic -O3)
 
-add_subdirectory(bflib)
+add_subdirectory(bf)
 add_subdirectory(bfapp)

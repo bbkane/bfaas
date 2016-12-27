@@ -11,12 +11,29 @@
 
 // pass in a larger data type at compile time with -DDATA_TYPE=<type>
 // Ex: -DDATA_TYPE=int
-#ifndef DATA_TYPE
-# define DATA_TYPE char
-#endif
+/* #ifndef DATA_TYPE */
+/* # define DATA_TYPE char */
+/* #endif */
+
+// TODO: this isn't working on makeheaders...
+#pragma messsage DATA_TYPE
 
 typedef DATA_TYPE data_type;
+
+// TODO: this isn't working on makeheaders...
 #undef DATA_TYPE
+
+// is this the right approach?
+struct bf_return {
+    data_type* data;
+    size_t data_len;
+    int* output;
+    size_t output_len;
+};
+
+// use the separate forms of declare and typdef
+// so makeheaders doesn't get confused
+typedef struct bf_return bf_return;
 
 #endif /* INTERFACE */
 

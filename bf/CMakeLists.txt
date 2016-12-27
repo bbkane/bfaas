@@ -1,13 +1,17 @@
 cmake_minimum_required(VERSION 3.0)
-project(bflib)
+project(bf)
 
 set(BF_LIB_FILES "${CMAKE_CURRENT_SOURCE_DIR}/bf.c" "${CMAKE_CURRENT_SOURCE_DIR}/bf.h")
 
-add_library(bflib "${BF_LIB_FILES}")
+add_library(bf "${BF_LIB_FILES}")
+
+# TODO: why does the program '+[.+]' only print up to 127 no matter the type passed?
+target_compile_definitions(bf PUBLIC DATA_TYPE=char)
 add_custom_target(makeheaders
     COMMAND makeheaders ${BF_LIB_FILES})
-add_dependencies(bflib makeheaders)
+add_dependencies(bf makeheaders)
+
 
 # Make sure the compiler can find include files for our Hello library
 # when other libraries or executables link to Hello
-target_include_directories (bflib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories (bf PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

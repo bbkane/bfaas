@@ -1,19 +1,10 @@
-#ifndef BF_H
-#define BF_H
-
-#define ARRAY_SIZE 30
-
-// pass in a larger data type at compile time with -DDATA_TYPE=<type>
-// Ex: -DDATA_TYPE=int
-#ifndef DATA_TYPE
+/* This file was automatically generated.  Do not edit! */
+#include <stddef.h>
+void bf_interpret(char *program,size_t data_len);
+#if !defined(DATA_TYPE)
 # define DATA_TYPE char
 #endif
-
 typedef DATA_TYPE data_type;
-
-#undef DATA_TYPE
-
-void print_truncated_data(data_type* data);
-void print_all_data(data_type* data);
-void bf_interpret(char* program);
-#endif
+void print_all_data(data_type *data,size_t data_len);
+void print_truncated_data(data_type *data,size_t data_len);
+#define INTERFACE 0

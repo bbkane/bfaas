@@ -24,7 +24,7 @@ typedef DATA_TYPE data_type;
 #undef DATA_TYPE
 
 // is this the right approach?
-struct bf_return {
+struct bf_output {
     data_type* data;
     size_t data_len;
     int* output;
@@ -33,9 +33,21 @@ struct bf_return {
 
 // use the separate forms of declare and typdef
 // so makeheaders doesn't get confused
-typedef struct bf_return bf_return;
+typedef struct bf_output bf_output;
+
+struct bf_input {
+    int* input;
+    size_t input_len;
+}
+
+typedef struct bf_input bf_input;
 
 #endif /* INTERFACE */
+
+bf_input* init_bf_input(size_t input_len)
+{
+    return NULL;
+}
 
 void print_truncated_data(data_type* data, size_t data_len)
 {
@@ -64,7 +76,7 @@ void print_all_data(data_type* data, size_t data_len)
 }
 
 
-void bf_interpret(char* program, size_t data_len)
+void bf_interpret(char* program, size_t data_len, bf_input* bf_input, bf_output* bf_output)
 {
     size_t program_length = strlen(program);
     char* program_ptr = program;

@@ -5,8 +5,6 @@ set(BF_LIB_FILES "${CMAKE_CURRENT_SOURCE_DIR}/bf.c" "${CMAKE_CURRENT_SOURCE_DIR}
 
 add_library(bf "${BF_LIB_FILES}")
 
-# TODO: why does the program '+[.+]' only print up to 127 no matter the type passed?
-target_compile_definitions(bf PUBLIC DATA_TYPE=char)
 add_custom_target(makeheaders
     COMMAND makeheaders ${BF_LIB_FILES})
 add_dependencies(bf makeheaders)

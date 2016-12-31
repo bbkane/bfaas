@@ -1,6 +1,6 @@
 #include "bf.h"
 
-int main(int argc, char** argv)
+int main()
 {
     /* char program[] = "++><."; */
     /* char program[] = "[[++]].."; */

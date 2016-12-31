@@ -9,19 +9,7 @@
 # if INTERFACE
 #include <stddef.h> // size_t
 
-// pass in a larger data type at compile time with -DDATA_TYPE=<type>
-// Ex: -DDATA_TYPE=int
-/* #ifndef DATA_TYPE */
-/* # define DATA_TYPE char */
-/* #endif */
-
-// TODO: this isn't working on makeheaders...
-#pragma messsage DATA_TYPE
-
-typedef DATA_TYPE data_type;
-
-// TODO: this isn't working on makeheaders...
-#undef DATA_TYPE
+typedef int data_type;
 
 // is this the right approach?
 struct bf_output {
@@ -38,15 +26,31 @@ typedef struct bf_output bf_output;
 struct bf_input {
     int* input;
     size_t input_len;
-}
+    size_t index;
+};
 
 typedef struct bf_input bf_input;
 
-#endif /* INTERFACE */
+#endif // INTERFACE
 
-bf_input* init_bf_input(size_t input_len)
-{
-    return NULL;
+bf_input* malloc_bf_input(int* input, size_t input_len, size_t index) {
+    bf_input* ret = malloc(sizeof(bf_input));
+    if (input) {
+        ret->input = input;
+    }
+    else {
+        input = malloc(sizeof(int) * input_len);
+        // Set the input to zeros if nothing was passed
+        memset(input, 0, sizeof(int) * input_len);
+    }
+    ret->input_len = input_len;
+    ret->index = index;
+    return ret;
+}
+
+void free_bf_input(bf_input* input) {
+    free(input->input);
+    free(input);
 }
 
 void print_truncated_data(data_type* data, size_t data_len)
@@ -75,8 +79,15 @@ void print_all_data(data_type* data, size_t data_len)
     printf("\n");
 }
 
-
-void bf_interpret(char* program, size_t data_len, bf_input* bf_input, bf_output* bf_output)
+// Interprets a bf program
+// Input:
+//   program: null terminated bf string
+//   data_len: the length of the data array used to interpret the program
+//   bf_input, a struct used to describe the input. If it's null, then stdin is used
+//      through the getchar() function
+//   bf_outpout, a struct used to describe the output. If it's null then stdout is used
+//   TODO: add max_steps param
+void bf_interpret(char* program, size_t data_len, bf_input* input, bf_output* output)
 {
     size_t program_length = strlen(program);
     char* program_ptr = program;
@@ -87,7 +98,7 @@ void bf_interpret(char* program, size_t data_len, bf_input* bf_input, bf_output*
     // if the data pointer ever reaches the flag variable,
     // make a new array and space the data around the flag pointer again
     // Evenly?
-    /* data_type data[ARRAY_SIZE] = {0}; */
+    // data_type data[ARRAY_SIZE] = {0};
     data_type* data = (data_type *)malloc(sizeof(data_type) * data_len);
     memset(data, 0, sizeof(data_type) * data_len);
 
@@ -119,8 +130,21 @@ void bf_interpret(char* program, size_t data_len, bf_input* bf_input, bf_output*
         else if (*program_ptr == '+') { (*data_ptr)++; }
         else if (*program_ptr == '-') { (*data_ptr)--; }
         // TODO: replace %d with %c to print characters
-        else if (*program_ptr == '.') { printf("%d\n", *data_ptr); }
-        else if (*program_ptr == ',') { *data_ptr = getchar(); }
+        else if (*program_ptr == '.') {
+            printf("%d\n", *data_ptr);
+        }
+        else if (*program_ptr == ',') {
+            if (input) {
+                *data_ptr = input->input[input->index];
+                input->index += 1;
+                // assert(input->index == input->input_len);
+                // For convenience, I'm going to just wrap the input around
+                if (input->index == input->input_len) {input->index = 0;}
+            }
+            else {
+                *data_ptr = getchar();
+            }
+        }
         else if (*program_ptr == '[') {
             if (!(*data_ptr)) {
                 int pair_count = 1;

@@ -48,10 +48,12 @@ bf_input* malloc_bf_input(int* input, size_t input_len, size_t index) {
     return ret;
 }
 
+
 void free_bf_input(bf_input* input) {
     free(input->input);
     free(input);
 }
+
 
 void print_truncated_data(data_type* data, size_t data_len)
 {

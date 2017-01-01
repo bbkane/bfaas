@@ -12,6 +12,8 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_options(-std=c11 -Wall -Wextra -pedantic -g)
 endif(MSVC)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
+
 add_subdirectory(bf)
 add_subdirectory(bfapp)
 add_subdirectory(bftest)

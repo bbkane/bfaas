@@ -35,14 +35,17 @@ typedef struct bf_input bf_input;
 
 bf_input* malloc_bf_input(int* input, size_t input_len, size_t index) {
     bf_input* ret = malloc(sizeof(bf_input));
-    if (input) {
-        ret->input = input;
-    }
-    else {
+    if (!input) {
         input = malloc(sizeof(int) * input_len);
         // Set the input to zeros if nothing was passed
         memset(input, 0, sizeof(int) * input_len);
+        // For testing make it increment
+        // TODO: rm
+        for(size_t i = 0; i < input_len; i++) {
+            input[i] = (int)(i + 1);
+        }
     }
+    ret->input = input;
     ret->input_len = input_len;
     ret->index = index;
     return ret;

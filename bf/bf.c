@@ -58,6 +58,36 @@ void free_bf_input(bf_input* input) {
 }
 
 
+void print_bf_input(bf_input* input) {
+    if(input) {
+        for(size_t i = 0; i < input->input_len; ++i) {
+            printf("%d ", input->input[i]);
+        }
+        printf("\n");
+    }
+    else {
+        printf("input from stdin\n");
+    }
+}
+
+
+int next_input(bf_input* input)
+{
+    int ret = 0;
+    if(input) {
+        ret = input->input[input->index];
+        input->index += 1;
+        // assert(input->index == input->input_len);
+        // wrap around the input so it makes a legit stream
+        if (input->index == input->input_len) {input->index = 0;}
+    }
+    else {
+        ret = getchar();
+    }
+    return ret;
+}
+
+
 void print_truncated_data(data_type* data, size_t data_len)
 {
     printf("truncated data:\n");
@@ -84,6 +114,7 @@ void print_all_data(data_type* data, size_t data_len)
     printf("\n");
 }
 
+
 // Interprets a bf program
 // Input:
 //   program: null terminated bf string
@@ -92,8 +123,11 @@ void print_all_data(data_type* data, size_t data_len)
 //      through the getchar() function
 //   bf_outpout, a struct used to describe the output. If it's null then stdout is used
 //   TODO: add max_steps param
-void bf_interpret(char* program, size_t data_len, bf_input* input, bf_output* output)
+void bf_interpret(char* program, size_t data_len, int max_iterations, bf_input* input, bf_output* output)
 {
+    // TODO: actually use output
+    (void)output;
+
     size_t program_length = strlen(program);
     char* program_ptr = program;
 
@@ -109,7 +143,7 @@ void bf_interpret(char* program, size_t data_len, bf_input* input, bf_output* ou
 
     data_type* data_ptr = data;
 
-    while (*program_ptr) {
+    while (*program_ptr && max_iterations) {
         assert(data_ptr >= data);
         assert(data_ptr <= data + data_len);
         assert(program_ptr >= program);
@@ -139,16 +173,7 @@ void bf_interpret(char* program, size_t data_len, bf_input* input, bf_output* ou
             printf("%d\n", *data_ptr);
         }
         else if (*program_ptr == ',') {
-            if (input) {
-                *data_ptr = input->input[input->index];
-                input->index += 1;
-                // assert(input->index == input->input_len);
-                // For convenience, I'm going to just wrap the input around
-                if (input->index == input->input_len) {input->index = 0;}
-            }
-            else {
-                *data_ptr = getchar();
-            }
+            *data_ptr = next_input(input);
         }
         else if (*program_ptr == '[') {
             if (!(*data_ptr)) {
@@ -176,7 +201,8 @@ void bf_interpret(char* program, size_t data_len, bf_input* input, bf_output* ou
                 }
             }
         }
-        program_ptr++;
+        ++program_ptr;
+        --max_iterations;
     }
     print_truncated_data(data, data_len);
     print_all_data(data, data_len);

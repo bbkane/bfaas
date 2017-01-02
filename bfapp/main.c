@@ -7,10 +7,10 @@
 #define LSH_RL_BUFSIZE 1024
 
 // https://brennan.io/2015/01/16/write-a-shell-in-c/
-char *lsh_read_line(void)
+static char *lsh_read_line(void)
 {
-    int bufsize = LSH_RL_BUFSIZE;
-    int position = 0;
+    size_t bufsize = LSH_RL_BUFSIZE;
+    size_t position = 0;
     char *buffer = malloc(sizeof(char) * bufsize);
     int c;
 
@@ -49,7 +49,7 @@ char *lsh_read_line(void)
 // TOOD:
 // Expand this to use '-f <file>' and input in the code itself
 // Must return a null terminated string
-char* get_program(int argc, char** argv)
+static char* get_program(int argc, char** argv)
 {
     if (argc == 1) {
         // get code from user

@@ -17,6 +17,7 @@ struct bf_output {
     size_t data_len;
     int* output;
     size_t output_len;
+    size_t output_index;
 };
 
 // use the separate forms of declare and typdef
@@ -33,7 +34,28 @@ typedef struct bf_input bf_input;
 
 #endif // INTERFACE
 
-bf_input* malloc_bf_input(int* input, size_t input_len, size_t index) {
+
+bf_output* malloc_bf_output(data_type* data, size_t data_len, int* output, size_t output_len)
+{
+    bf_output* ret = malloc(sizeof(bf_output));
+    ret->data = data;
+    ret->data_len = data_len;
+    ret->output = output;
+    ret->output_len = output_len;
+    ret->output_index = 0;
+    return ret;
+}
+
+
+void add_to_output(bf_output* output, int output_to_add)
+{
+    //TODO: make
+    return;
+}
+
+
+bf_input* malloc_bf_input(int* input, size_t input_len, size_t index)
+{
     bf_input* ret = malloc(sizeof(bf_input));
     if (!input) {
         input = malloc(sizeof(int) * input_len);
@@ -167,9 +189,6 @@ static void print_program_state(char* program, char* program_ptr, data_type* dat
 //   TODO: add max_steps param
 void bf_interpret(char* program, size_t data_len, int max_iterations, bf_input* input, bf_output* output, bool print_debug_info)
 {
-    // TODO: actually use output
-    (void)output;
-
     size_t program_length = strlen(program);
     char* program_ptr = program;
 
@@ -212,7 +231,12 @@ void bf_interpret(char* program, size_t data_len, int max_iterations, bf_input* 
         else if (*program_ptr == '-') { (*data_ptr)--; }
         // TODO: replace %d with %c to print characters
         else if (*program_ptr == '.') {
-            printf("%d\n", *data_ptr);
+            if (output) {
+                add_to_output(output, *data_ptr);
+            }
+            else {
+                printf("%d\n", *data_ptr);
+            }
         }
         else if (*program_ptr == ',') {
             *data_ptr = next_input(input);

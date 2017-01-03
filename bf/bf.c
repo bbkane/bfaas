@@ -11,7 +11,6 @@
 
 typedef int data_type;
 
-// is this the right approach?
 struct bf_output {
     data_type* data;
     size_t data_len;
@@ -118,9 +117,10 @@ void print_all_data(data_type* data, size_t data_len)
 
 
 // making this static because it uses internal state from bf_interpret
-static void print_program_state(char* program, char* program_ptr, data_type* data, size_t data_len, data_type* data_ptr)
+static void print_program_state(char* program, char* program_ptr, data_type* data, size_t data_len, data_type* data_ptr, int max_iterations)
 {
     char* indent = ":: ";
+    printf("%siterations left: %d\n", indent, max_iterations);
     size_t program_len = strlen(program);
     char* program_spot = malloc(sizeof(char) * (program_len + 1));
     memset(program_spot, ' ', program_len);
@@ -242,7 +242,7 @@ void bf_interpret(char* program, size_t data_len, int max_iterations, bf_input* 
                 }
             }
         }
-        print_program_state(program, program_ptr, data, data_len, data_ptr);
+        print_program_state(program, program_ptr, data, data_len, data_ptr, max_iterations);
         ++program_ptr;
         --max_iterations;
     }

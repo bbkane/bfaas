@@ -2,12 +2,25 @@
 
 ## Dependencies
 
-- [makeheaders](http://www.hwaci.com/sw/mkhdr/) (make sure it's in the path)
 - CMake
 - a C compiler
 
-TODO:
+## Optional Dependencies
+- [makeheaders](http://www.hwaci.com/sw/mkhdr/). If makeheaders isn't in the PATH, the header files for this project won't be auto-generated: change them manually (and expect your changes to be erased the next time makeheaders runs) or don't change any declarations.
+- valgrind (`make valgrind`)
 
-- I need to figure out a way to use the same logic whether I'm dealing with stdin/stdout or with an input array and an output array.
+## Build
+
+```bash
+cd bfaas
+mkdir build && cd build
+cmake ..
+make
+```
+
+## TODO
+
+- make the output struct work
+- add more tests
 - Make the HTTP server part (Python with sanic? Go?)
-- Make CMakeLists cross platform with better options
+- profit

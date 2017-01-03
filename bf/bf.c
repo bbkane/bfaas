@@ -7,6 +7,7 @@
 
 // makeheaders will put this in the header file
 # if INTERFACE
+#include <stdbool.h>
 #include <stddef.h> // size_t
 
 typedef int data_type;
@@ -164,7 +165,7 @@ static void print_program_state(char* program, char* program_ptr, data_type* dat
 //      through the getchar() function
 //   bf_outpout, a struct used to describe the output. If it's null then stdout is used
 //   TODO: add max_steps param
-void bf_interpret(char* program, size_t data_len, int max_iterations, bf_input* input, bf_output* output)
+void bf_interpret(char* program, size_t data_len, int max_iterations, bf_input* input, bf_output* output, bool print_debug_info)
 {
     // TODO: actually use output
     (void)output;
@@ -242,7 +243,9 @@ void bf_interpret(char* program, size_t data_len, int max_iterations, bf_input* 
                 }
             }
         }
-        print_program_state(program, program_ptr, data, data_len, data_ptr, max_iterations);
+        if (print_debug_info) {
+            print_program_state(program, program_ptr, data, data_len, data_ptr, max_iterations);
+        }
         ++program_ptr;
         --max_iterations;
     }

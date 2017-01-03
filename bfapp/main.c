@@ -71,6 +71,6 @@ static char* get_program(int argc, char** argv)
 int main(int argc, char** argv)
 {
     char* program = get_program(argc, argv);
-    bf_interpret(program, 5, 1000, NULL, NULL);
+    bf_interpret(program, 5, 1000, NULL, NULL, false);
 }
 

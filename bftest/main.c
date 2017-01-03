@@ -11,7 +11,7 @@ static void test(char* program, bf_input* input, int max_iterations, bool testme
         printf("input: ");
         print_bf_input(input);
         // hardcoding the data array size
-        bf_interpret(program, 5, max_iterations, input, NULL);
+        bf_interpret(program, 5, max_iterations, input, NULL, true);
     }
     else {
         printf("---\n");

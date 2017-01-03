@@ -53,8 +53,10 @@ bf_input* malloc_bf_input(int* input, size_t input_len, size_t index) {
 
 
 void free_bf_input(bf_input* input) {
-    free(input->input);
-    free(input);
+    if(input) {
+        free(input->input);
+        free(input);
+    }
 }
 
 
@@ -112,6 +114,45 @@ void print_all_data(data_type* data, size_t data_len)
         printf("%d ", data[i]);
     }
     printf("\n");
+}
+
+
+// making this static because it uses internal state from bf_interpret
+static void print_program_state(char* program, char* program_ptr, data_type* data, size_t data_len, data_type* data_ptr)
+{
+    char* indent = ":: ";
+    size_t program_len = strlen(program);
+    char* program_spot = malloc(sizeof(char) * (program_len + 1));
+    memset(program_spot, ' ', program_len);
+    program_spot[program_ptr - program] = '^';
+    program_spot[program_len] = '\0';
+    printf("%s%s\n", indent, program);
+    printf("%s%s\n", indent, program_spot);
+
+    data_type* data_spot = malloc(sizeof(data_type) * data_len);
+    memset(data_spot, 0, sizeof(data_type) * data_len);
+    data_spot[data_ptr - data] = 1;
+
+    printf("%s", indent);
+    for(size_t i = 0; i < data_len; ++i) {
+        printf("%d ", data[i]);
+    }
+    printf("\n");
+    printf("%s", indent);
+    for(size_t i = 0; i < data_len; ++i) {
+        if (data_spot[i]) {
+            printf("^ ");
+        }
+        else {
+            printf("  ");
+        }
+    }
+    printf("\n\n");
+
+    // TODO: print the data
+
+    free(data_spot);
+    free(program_spot);
 }
 
 
@@ -201,6 +242,7 @@ void bf_interpret(char* program, size_t data_len, int max_iterations, bf_input* 
                 }
             }
         }
+        print_program_state(program, program_ptr, data, data_len, data_ptr);
         ++program_ptr;
         --max_iterations;
     }

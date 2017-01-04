@@ -35,22 +35,53 @@ typedef struct bf_input bf_input;
 #endif // INTERFACE
 
 
-bf_output* malloc_bf_output(data_type* data, size_t data_len, int* output, size_t output_len)
+bf_output* malloc_bf_output(data_type* data, size_t data_len, int* output, size_t output_len, size_t output_index)
 {
     bf_output* ret = malloc(sizeof(bf_output));
     ret->data = data;
     ret->data_len = data_len;
+    if(!output) {
+        output = malloc(sizeof(int) * output_len);
+        memset(output, 0, sizeof(int) * output_len);
+    }
     ret->output = output;
     ret->output_len = output_len;
-    ret->output_index = 0;
+    ret->output_index = output_index;
     return ret;
 }
 
 
-void add_to_output(bf_output* output, int output_to_add)
+void add_to_bf_output(bf_output* output, int output_to_add)
 {
-    //TODO: make
-    return;
+    // TODO: add some fancy realloc stuff here
+    // instead of the wraparound
+    if (output->output_index == output->output_len) {
+        output->output_index = 0;
+    }
+    output->output[output->output_index] = output_to_add;
+    output->output_index += 1;
+}
+
+
+void free_bf_output(bf_output* output)
+{
+    if (output) {
+        free(output->data);
+        free(output->output);
+        free(output);
+    }
+}
+
+
+void print_bf_output(bf_output* output)
+{
+    print_all_data(output->data, output->data_len);
+
+    for(size_t i = 0; i < output->output_len; ++i)
+    {
+        printf("%d ", output->output[i]);
+    }
+    printf("\n");
 }
 
 
@@ -99,11 +130,11 @@ int next_input(bf_input* input)
 {
     int ret = 0;
     if(input) {
-        ret = input->input[input->index];
-        input->index += 1;
         // assert(input->index == input->input_len);
         // wrap around the input so it makes a legit stream
         if (input->index == input->input_len) {input->index = 0;}
+        ret = input->input[input->index];
+        input->index += 1;
     }
     else {
         ret = getchar();
@@ -132,7 +163,7 @@ void print_all_data(data_type* data, size_t data_len)
 {
     printf("all data:\n");
 
-    for(size_t i = 0; i < data_len; i++) {
+    for(size_t i = 0; i < data_len; ++i) {
         printf("%d ", data[i]);
     }
     printf("\n");
@@ -232,7 +263,7 @@ void bf_interpret(char* program, size_t data_len, int max_iterations, bf_input* 
         // TODO: replace %d with %c to print characters
         else if (*program_ptr == '.') {
             if (output) {
-                add_to_output(output, *data_ptr);
+                add_to_bf_output(output, *data_ptr);
             }
             else {
                 printf("%d\n", *data_ptr);
@@ -273,8 +304,14 @@ void bf_interpret(char* program, size_t data_len, int max_iterations, bf_input* 
         ++program_ptr;
         --max_iterations;
     }
-    print_truncated_data(data, data_len);
-    print_all_data(data, data_len);
-    free(data);
+    if (output) {
+        output->data = data;
+        output->data_len = data_len;
+    }
+    else {
+        print_truncated_data(data, data_len);
+        print_all_data(data, data_len);
+        free(data);
+    }
 }
 

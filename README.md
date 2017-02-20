@@ -24,3 +24,4 @@ make
 - add more tests
 - Make the HTTP server part (Python with sanic? Go?)
 - profit
+- Try SWIG (cffi is a lot of trouble...)
